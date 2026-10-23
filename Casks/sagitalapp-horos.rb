@@ -23,6 +23,13 @@ cask "sagitalapp-horos" do
     remove "Library/Application Support/Horos/Plugins/SpinopelvicParams.horosplugin", base: :home, recursive: true
   end
 
+  # Horos refuses to load a quarantined plugin, and install steps have no xattr action yet.
+  postflight do # rubocop:disable Cask/InstallSteps
+    system_command "/usr/bin/xattr",
+                   args: ["-dr", "com.apple.quarantine",
+                          File.expand_path("~/Library/Application Support/Horos/Plugins/SpinopelvicParams.horosplugin")]
+  end
+
   caveats <<~EOS
     Cerrá Horos con Cmd+Q y volvé a abrirlo. El plugin está en
       Plugins → ROI Tools → SagitalApp – Parámetros espinopélvicos…
