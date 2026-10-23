@@ -15,19 +15,22 @@ cask "sagitalapp-horos" do
   depends_on arch: :arm64
   depends_on :macos
 
-  artifact "SpinopelvicParams.horosplugin",
-           target: "~/Library/Application Support/Horos/Plugins/SpinopelvicParams.horosplugin"
+  # Copied by a script rather than an artifact so the quarantine flag Homebrew sets on downloads can be
+  # cleared (Horos refuses to load a quarantined plugin), replacing any copy from the .pkg or the
+  # plugin's own updater.
+  installer script: {
+    executable: "/bin/bash",
+    args:       ["-c", <<~SH],
+      set -e
+      DEST="$HOME/Library/Application Support/Horos/Plugins"
+      mkdir -p "$DEST"
+      rm -rf "$DEST/SpinopelvicParams.horosplugin"
+      cp -R "#{staged_path}/SpinopelvicParams.horosplugin" "$DEST/"
+      xattr -dr com.apple.quarantine "$DEST/SpinopelvicParams.horosplugin"
+    SH
+  }
 
-  # A copy put there by the .pkg installer or by the plugin's own updater would block the move.
-  preflight_steps do
-    remove "Library/Application Support/Horos/Plugins/SpinopelvicParams.horosplugin", base: :home, recursive: true
-  end
-
-  # Horos refuses to load a quarantined plugin, and install steps have no xattr action yet.
-  postflight do
-    plugin = File.expand_path("~/Library/Application Support/Horos/Plugins/SpinopelvicParams.horosplugin")
-    system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", plugin]
-  end
+  uninstall delete: "~/Library/Application Support/Horos/Plugins/SpinopelvicParams.horosplugin"
 
   caveats <<~EOS
     Cerrá Horos con Cmd+Q y volvé a abrirlo. El plugin está en
