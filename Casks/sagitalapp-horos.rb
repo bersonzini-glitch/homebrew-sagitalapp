@@ -30,7 +30,12 @@ cask "sagitalapp-horos" do
     SH
   }
 
-  uninstall delete: "~/Library/Application Support/Horos/Plugins/SpinopelvicParams.horosplugin"
+  # A script rather than `delete`, which runs through sudo and would ask for a password.
+  uninstall script: {
+    executable: "/bin/rm",
+    args:       ["-rf", "#{Dir.home}/Library/Application Support/Horos/Plugins/SpinopelvicParams.horosplugin"],
+    sudo:       false,
+  }
 
   caveats <<~EOS
     Cerrá Horos con Cmd+Q y volvé a abrirlo. El plugin está en
