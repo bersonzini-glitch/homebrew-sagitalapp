@@ -1,6 +1,6 @@
 cask "sagitalapp-horos" do
-  version "1.3.0"
-  sha256 "0b3d6d7cf1c13588591d1c2207b8c3e29c53364d73c0691851d67cff798f6900"
+  version "1.4.0"
+  sha256 "46b0c4ea632c2292be69610cfc6cfd4146cb710d467c9383fd6d855e093687dd"
 
   url "https://github.com/bersonzini-glitch/horos-parametros-espinopelvicos/releases/download/v#{version}/SpinopelvicParams.horosplugin.zip"
   name "SagitalApp para Horos"
