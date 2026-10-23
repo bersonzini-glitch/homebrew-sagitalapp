@@ -12,6 +12,8 @@ cask "sagitalapp-weasis" do
     strategy :github_latest
   end
 
+  depends_on :macos
+
   pkg "Instalar-SagitalApp-Weasis-Mac.pkg"
 
   # Same as "Desinstalar Espinopelvico Weasis.command": the per-user files the package's

@@ -13,20 +13,14 @@ cask "sagitalapp-horos" do
   end
 
   depends_on arch: :arm64
-  depends_on macos: ">= :big_sur"
+  depends_on :macos
 
-  plugin = "~/Library/Application Support/Horos/Plugins/SpinopelvicParams.horosplugin"
-
-  artifact "SpinopelvicParams.horosplugin", target: plugin
+  artifact "SpinopelvicParams.horosplugin",
+           target: "~/Library/Application Support/Horos/Plugins/SpinopelvicParams.horosplugin"
 
   # A copy put there by the .pkg installer or by the plugin's own updater would block the move.
-  preflight do
-    FileUtils.rm_rf File.expand_path(plugin)
-  end
-
-  # Horos refuses to load a quarantined plugin.
-  postflight do
-    system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", File.expand_path(plugin)]
+  preflight_steps do
+    remove "Library/Application Support/Horos/Plugins/SpinopelvicParams.horosplugin", base: :home, recursive: true
   end
 
   caveats <<~EOS
