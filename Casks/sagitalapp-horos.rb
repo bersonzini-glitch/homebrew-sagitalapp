@@ -24,10 +24,9 @@ cask "sagitalapp-horos" do
   end
 
   # Horos refuses to load a quarantined plugin, and install steps have no xattr action yet.
-  postflight do # rubocop:disable Cask/InstallSteps
-    system_command "/usr/bin/xattr",
-                   args: ["-dr", "com.apple.quarantine",
-                          File.expand_path("~/Library/Application Support/Horos/Plugins/SpinopelvicParams.horosplugin")]
+  postflight do
+    plugin = File.expand_path("~/Library/Application Support/Horos/Plugins/SpinopelvicParams.horosplugin")
+    system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", plugin]
   end
 
   caveats <<~EOS
