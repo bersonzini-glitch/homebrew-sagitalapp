@@ -1,6 +1,6 @@
 cask "sagitalapp-weasis" do
-  version "1.5.1"
-  sha256 "30ccd4a877271b048154045734a71d3d34f3094951df1394c98c8ea40c6eef30"
+  version "1.6.0"
+  sha256 "9602eee4044accae8ba02d58199b1e1ff3c3332c8e4571589d58b946e3459ecf"
 
   url "https://github.com/bersonzini-glitch/weasis-parametros-espinopelvicos/releases/download/v#{version}/Instalar-SagitalApp-Weasis-Mac.pkg"
   name "SagitalApp para Weasis"
