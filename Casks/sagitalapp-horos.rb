@@ -1,10 +1,10 @@
 cask "sagitalapp-horos" do
-  version "1.9.0"
-  sha256 "411b9e2b5ddf290f9ea5782c83d3fc58d0891ca5cb75d2820f61d165c1067f76"
+  version "1.10.0"
+  sha256 "9999785cc91553411dbf0196537785ddee116fb274c7d87ea6bf225b5c8c4d70"
 
   url "https://github.com/bersonzini-glitch/horos-parametros-espinopelvicos/releases/download/v#{version}/SpinopelvicParams.horosplugin.zip"
-  name "SagitalApp para Horos"
-  desc "Horos plugin for spinopelvic sagittal parameters (PI, PT, SS, LL, SVA, T1PA)"
+  name "SagitalApp para Horos y OsiriX"
+  desc "Horos and OsiriX plugin for spinopelvic sagittal parameters (PI, PT, SS, LL, SVA, T1PA)"
   homepage "https://github.com/bersonzini-glitch/horos-parametros-espinopelvicos"
 
   livecheck do
@@ -22,23 +22,28 @@ cask "sagitalapp-horos" do
     executable: "/bin/bash",
     args:       ["-c", <<~SH],
       set -e
-      DEST="$HOME/Library/Application Support/Horos/Plugins"
-      mkdir -p "$DEST"
-      rm -rf "$DEST/SpinopelvicParams.horosplugin"
-      cp -R "#{staged_path}/SpinopelvicParams.horosplugin" "$DEST/"
-      xattr -dr com.apple.quarantine "$DEST/SpinopelvicParams.horosplugin"
+      SRC="#{staged_path}/SpinopelvicParams.horosplugin"
+      # The same bundle runs in OsiriX, which wants the .osirixplugin extension in its own folder.
+      for DEST in "$HOME/Library/Application Support/Horos/Plugins/SpinopelvicParams.horosplugin" \
+                  "$HOME/Library/Application Support/OsiriX/Plugins/SpinopelvicParams.osirixplugin"; do
+        mkdir -p "$(dirname "$DEST")"
+        rm -rf "$DEST"
+        cp -R "$SRC" "$DEST"
+        xattr -dr com.apple.quarantine "$DEST"
+      done
     SH
   }
 
   # A script rather than `delete`, which runs through sudo and would ask for a password.
   uninstall script: {
     executable: "/bin/rm",
-    args:       ["-rf", "#{Dir.home}/Library/Application Support/Horos/Plugins/SpinopelvicParams.horosplugin"],
+    args:       ["-rf", "#{Dir.home}/Library/Application Support/Horos/Plugins/SpinopelvicParams.horosplugin",
+                 "#{Dir.home}/Library/Application Support/OsiriX/Plugins/SpinopelvicParams.osirixplugin"],
     sudo:       false,
   }
 
   caveats <<~EOS
-    Cerrá Horos con Cmd+Q y volvé a abrirlo. El plugin está en
-      Plugins → ROI Tools → SagitalApp – Parámetros espinopélvicos…
+    Cerrá Horos u OsiriX con Cmd+Q y volvé a abrirlo. El plugin está en
+      Plugins → ROI Tools (Herramientas ROI) → SagitalApp – Parámetros espinopélvicos…
   EOS
 end
